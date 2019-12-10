@@ -26,7 +26,7 @@ The algorithm "PointCloud Fast Filter" (PFF) extract the relevant information fr
 * [sensor_height] :  S<sub>h</sub>, see the following image. in meters.
 * [robot_height] :  S<sub>h</sub>, see the following image. in meters.
 
-![alt text](https://drive.google.com/uc?export=view&id=1uc0RkrQKS-tn0tOWV6qpO-tbXu27aiP8)
+![alt text](https://drive.google.com/uc?export=view&id=16ya1gxClsY0DkhNTmTlV1ucT5h4f_jyX)
 
 ### Special parameters for RGB-D Camera
 
