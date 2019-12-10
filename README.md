@@ -48,7 +48,7 @@ $ cd ~/catkin_ws && catkin_make
 
 #### Requirements
 
-To run the detection with the Astra Camera (from: https://github.com/orbbec/ros_astra_camera):
+To launch the mapping with the Astra Camera (from: https://github.com/orbbec/ros_astra_camera):
 
 ```sh
 $ sudo apt install ros-$ROS_DISTRO-rgbd-launch ros-$ROS_DISTRO-libuvc ros-$ROS_DISTRO-libuvc-camera ros-$ROS_DISTRO-libuvc-ros
@@ -59,7 +59,7 @@ $ https://github.com/orbbec/ros_astra_launch.git
 $ cd ~/catkin_ws && catkin_make
 ```
 
-To run the detection with the Velodyne:
+To launch the mapping with the Velodyne:
 
 ```sh
 $ cd ~/catkin_ws/src
