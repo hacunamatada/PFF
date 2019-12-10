@@ -28,14 +28,8 @@ The algorithm "PointCloud Fast Filter" (PFF) extract the relevant information fr
 
 ![alt text](https://drive.google.com/uc?export=view&id=16ya1gxClsY0DkhNTmTlV1ucT5h4f_jyX)
 
-### Special parameters for RGB-D Camera
-
-* [camera_fov] :  Horizontal Field of View of the RGB-D camera in degrees.
-
 ### Special parameters for Velodyne
 
-* [min_vision_range] :  Minimum Detection Range, in meters.
-* [max_vision_range] :  Maximum Detection Range, in meters.
 * [horizontal_fov] :  Desired horizontal field of view (from -theta/2 to theta/2), see the following image. in degrees.
 
 ![alt text](https://drive.google.com/uc?export=view&id=1489zOF8vgnzcyRe783N9ieJLoMB6DqZj)
@@ -44,7 +38,7 @@ The algorithm "PointCloud Fast Filter" (PFF) extract the relevant information fr
 ## How to build with catkin
 ```sh
 $ cd ~/catkin_ws/src/
-$ git clone https://github.com/cafemesa/PFF_PeD.git
+$ git clone https://github.com/cafemesa/PFF.git
 $ cd ~/catkin_ws && catkin_make
 ```
 
@@ -75,71 +69,36 @@ $ rosdep install --from-paths src -i -y
 $ catkin_make
 ```
 
-#### Detection with Astra Camera PointCloud
+#### Traversable mapping with Astra Camera PointCloud
 
 ```sh
-$ roslaunch pff_ped astra_people.launch 
+$ roslaunch pff astra_pff.launch 
 ```
 
 The previous command run:
 * roslaunch astra_launch astrapro.launch
-* rosrun pff_ped astra_people
+* rosrun pff astra_pff
 * rivz with the configuration
 
 #### Detection with Velodyne VLP-16 PointCloud
 
 ```sh
-$ roslaunch pff_ped velodyne_people.launch 
+$ roslaunch pff velodyne_pff.launch 
 ```
 
 The previous command run:
 * roslaunch velodyne_pointcloud VLP16_points.launch
-* rosrun pff_ped velodyne_people
+* rosrun pff velodyne_pff
 * rivz with the configuration
-
-#### Detection with Velodyne VLP-16 PointCloud Bag
-
-Create the correct folder to store the bags
-```sh
-$ cd ~/catkin_ws/src/pff_ped/
-$ mkdir bags
-```
-Download the bags files and copy into the "bags" folder
-
-1. [student.bag](https://drive.google.com/file/d/1OD5GOuFTOBBUm99sQhbYipx3AwcPNw6S/view?usp=sharing)
-2. [robotics.bag](https://drive.google.com/file/d/1N78rw1e5l_4-6CD6tOxYE53V-_9LU6gh/view?usp=sharing)
-3. [office.bag](https://drive.google.com/file/d/10xV6P-xX4-N_lJB54QQaNSm-nbiK8bVS/view?usp=sharing)
-4. [corridor.bag](https://drive.google.com/file/d/1BC3z_WJyiTMrO-u8sMz0bYei-BttHsG_/view?usp=sharing)
-
-Set the desired bag in the launch file and run
-
-```sh
-$ roslaunch pff_ped velodyne_people_bag.launch 
-```
-
-The previous command run:
-* rosrun pff_ped velodyne_people
-* rivz with the configuration
-* rosbag play [bag_name]
 
 ### Nodes (rosrun)
 
 #### Detection with Astra Camera PointCloud
 
-With the sensor:
-
 ```sh
-$ rosrun pff_ped astra_people
+$ rosrun pff astra_pff
 $ roslaunch astra_launch astrapro.launch
-$ rosrun rviz rviz -d ~/catkin_ws/src/pff_ped/rviz_cfg/astra_people.rviz
-```
-
-With a bag:
-
-```sh
-$ rosrun pff_ped astra_people
-$ rosrun rviz rviz -d ~/catkin_ws/src/pff_ped/rviz_cfg/astra_people.rviz
-$ rosbag play [BAG_FILE]
+$ rosrun rviz rviz -d ~/catkin_ws/src/pff/rviz_cfg/pff.rviz
 ```
 
 #### Detection with Velodyne VLP-16 PointCloud
@@ -147,15 +106,7 @@ $ rosbag play [BAG_FILE]
 With the sensor:
 
 ```sh
-$ rosrun pff_ped velodyne_people
+$ rosrun pff velodyne_pff
 $ roslaunch velodyne_pointcloud VLP16_points.launch
-$ rosrun rviz rviz -d ~/catkin_ws/src/pff_ped/rviz_cfg/velodyne_people.rviz
-```
-
-With a bag:
-
-```sh
-$ rosrun pff_ped velodyne_people
-$ rosrun rviz rviz -d ~/catkin_ws/src/pff_ped/rviz_cfg/velodyne_people.rviz
-$ rosbag play [BAG_FILE]
+$ rosrun rviz rviz -d ~/catkin_ws/src/pff/rviz_cfg/pff.rviz
 ```
