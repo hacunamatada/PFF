@@ -112,7 +112,7 @@ $ rosrun rviz rviz -d ~/catkin_ws/src/pff/rviz_cfg/pff.rviz
 ```
 
 ## Cite this work
-<code>
+```sh
 @inproceedings{medinasanchez2019,
   title={Efficient Traversability Mapping for Service Robots Using a Point-cloud Fast Filter},
   author={Medina S{\'a}nchez, Carlos and Zella, Matteo and Capitan, Jes{\'u}s and Marron, Pedro J},
@@ -121,5 +121,5 @@ $ rosrun rviz rviz -d ~/catkin_ws/src/pff/rviz_cfg/pff.rviz
   year={2019},
   organization={IEEE}
 }
-</code>
+```
 
