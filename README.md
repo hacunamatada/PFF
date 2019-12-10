@@ -110,3 +110,15 @@ $ rosrun pff velodyne_pff
 $ roslaunch velodyne_pointcloud VLP16_points.launch
 $ rosrun rviz rviz -d ~/catkin_ws/src/pff/rviz_cfg/pff.rviz
 ```
+
+## Cite this work
+
+@inproceedings{medinasanchez2019,
+  title={Efficient Traversability Mapping for Service Robots Using a Point-cloud Fast Filter},
+  author={Medina S{\'a}nchez, Carlos and Zella, Matteo and Capitan, Jes{\'u}s and Marron, Pedro J},
+  booktitle={2019 19th International Conference on Advanced Robotics (ICAR)},
+  pages={590--595},
+  year={2019},
+  organization={IEEE}
+}
+
