@@ -23,8 +23,8 @@ The algorithm "PointCloud Fast Filter" (PFF) extract the relevant information fr
 ## Parameters
 
 * [resolution] :  Angle resolution in degrees for filter the points in a cloud of size 360°/resolution.
-* [sensor_height] :  S<sub>h</sub>, see the following image. in meters.
-* [robot_height] :  S<sub>h</sub>, see the following image. in meters.
+* [sensor_height] :  S<sub>f</sub>, see the following image. in meters.
+* [robot_height] :  S<sub>r</sub>, see the following image. in meters.
 
 ![alt text](https://drive.google.com/uc?export=view&id=16ya1gxClsY0DkhNTmTlV1ucT5h4f_jyX)
 
