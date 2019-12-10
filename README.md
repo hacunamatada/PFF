@@ -17,20 +17,16 @@ The algorithm "PointCloud Fast Filter" (PFF) extract the relevant information fr
 
 ## Published Topics
 
-* [/scan] :  PointCloud with the final detection.
+* [/scan] :  LaserScan to be used with any 2D SLAM algorithm.
 
 
 ## Parameters
 
 * [resolution] :  Angle resolution in degrees for filter the points in a cloud of size 360°/resolution.
-* [sensorheight] :  S<sub>h</sub>, see the following image. in meters.
-* [legs_begin] :  F<sub>r</sub>, see the following image. in meters.
-* [legs_end] :  F<sub>r</sub> + L<sub>r</sub>, see the following image. in meters.
-* [trunk_begin] :  F<sub>r</sub> + L<sub>r</sub> + S<sub>r</sub>, see the following image. in meters.
-* [trunk_end] :  F<sub>r</sub> + L<sub>r</sub> + S<sub>r</sub> + T<sub>r</sub>, see the following image. in meters.
+* [sensor_height] :  S<sub>h</sub>, see the following image. in meters.
+* [robot_height] :  S<sub>h</sub>, see the following image. in meters.
 
-
-![alt text](https://drive.google.com/uc?export=view&id=1TZIoPp-C2Put52MMIJFfRcFap0CeOHIg)
+![alt text](https://drive.google.com/uc?export=view&id=1uc0RkrQKS-tn0tOWV6qpO-tbXu27aiP8)
 
 ### Special parameters for RGB-D Camera
 
