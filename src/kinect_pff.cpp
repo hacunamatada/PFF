@@ -7,7 +7,7 @@
 #define PI 3.14159265
 
  
-ros::Publisher scan_pub;
+ros::Publisher scan_pub,laserCloud_pub;
 float robotheight, sensorheight, resolution;
 
 //Struct to access for each point cordenates
@@ -45,6 +45,7 @@ cloud_cb2 (const sensor_msgs::PointCloud2ConstPtr& input)
 
   pcl::PointCloud<pcl::PointXYZ> laserCloudIn;
   pcl::PointCloud<pcl::PointXYZ> laserCloudOut;
+  laserCloudOut.points.resize(numPts);
   pcl::fromROSMsg(*input, laserCloudIn);
   pcl::PointXYZI point;  
 
@@ -62,47 +63,52 @@ cloud_cb2 (const sensor_msgs::PointCloud2ConstPtr& input)
     float* base = (float*)(raw3DPtsData + i * input->point_step);
     Point3D point3d(0.,0.,0.);       
 
-    point.x=base[0];
-    point.y=base[2];
+    point.x=base[2];
+    point.y=-base[0];
     point.z=-base[1];
 
     // Vertical filter : Points with a height greater than the height of the robot are discarded
-    if (point.z > robotheight-sensorheight || (-sensorheight-0.1<=point.z && point.z < -sensorheight + 0.1)|| 
-      isnan(point.x)==1 || isnan(point.y)==1)
-    {
-      continue;
-    }
+    if (point.z < -sensorheight || point.z > robotheight-sensorheight || isnan(point.x)==1 || isnan(point.y)==1) {continue;}
 
     float hip = sqrt((point.x)*(point.x)+((point.y)*(point.y)));
-		float hangle = (asin ((point.x)/hip))*180/PI;       
+		float hangle = (asin ((point.x)/hip))*180/PI;     
 
     //Fliter nearest point per angle resolution
     if (point.y>0) {
-		position=(180.0+hangle)/resolution;
-	}
-	else if (point.y<=0) {
-		position=(360.0-hangle)/resolution;
-	}
+      position=(180.0+hangle)/resolution;
+    }
+    else if (point.y<=0) {
+      position=(360.0-hangle)/resolution;
+    }
 
-	if (ranges[position]==0 || hip < ranges[position])
-	{
-		ranges[position]=hip;
-		intensities[position]=50;
-	}	
-       
+    if (ranges[position]==0 || hip < ranges[position])
+    {
+      ranges[position]=hip;
+      intensities[position]=50;
+    }	
+
+    laserCloudOut.points[i].x=point.x;
+		laserCloudOut.points[i].y=point.y;
+		laserCloudOut.points[i].z=point.z;	     
+
   }
+  //Publish LegsCloud
+	sensor_msgs::PointCloud2 laserCloudOut_output;
+	pcl::toROSMsg(laserCloudOut, laserCloudOut_output);
+  laserCloudOut_output.header.frame_id = "base_link";
+	laserCloud_pub.publish (laserCloudOut_output);
 
   // Configuration of parameters for conversion to LaserScan
   ros::Time scan_time = ros::Time::now();
   sensor_msgs::LaserScan scan;
   scan.header.stamp = scan_time;
-  scan.header.frame_id = "base_footprint";
-  scan.angle_min = 3.14;
-  scan.angle_max = -3.14;
+  scan.header.frame_id = "base_link";
+  scan.angle_min = 3*PI/2;
+  scan.angle_max = -PI/2;
   scan.angle_increment = -6.28 / num_readings;
   scan.time_increment = (1 /  num_readings);
   scan.range_min = 0.2;
-  scan.range_max = 4.0;
+  scan.range_max = 10.0;
   scan.ranges.resize(num_readings);
   scan.intensities.resize(num_readings);
 
@@ -114,25 +120,28 @@ cloud_cb2 (const sensor_msgs::PointCloud2ConstPtr& input)
 
   // Publishing of the LaserScan topic
   scan_pub.publish(scan);	
+
+    
 }
 
 int 
 main (int argc, char **argv)
 {    
     // Initialize ROS
-    ros::init (argc, argv, "astra_pff");
+    ros::init (argc, argv, "kinect_pff");
     ros::NodeHandle nh;
 
     // Get launch parameters
-    if(!nh.getParam("/astra_pff/robot_height",robotheight)){robotheight = 0.6;}
-    if(!nh.getParam("/astra_pff/sensor_height",sensorheight)){sensorheight = 0.25;}
-    if(!nh.getParam("/astra_pff/resolution",resolution)){resolution = 0.1;}
+    if(!nh.getParam("/kinect_pff/robot_height",robotheight)){robotheight = 0.6;}
+    if(!nh.getParam("/kinect_pff/sensor_height",sensorheight)){sensorheight = 0.3;}
+    if(!nh.getParam("/kinect_pff/resolution",resolution)){resolution = 0.2;}
     
     // Create a ROS subscriber for the input PointCloud
     ros::Subscriber sub = nh.subscribe ("/camera/depth/points", 1, cloud_cb2);
     
     // Create a ROS publisher for the output LaserScan
     scan_pub = nh.advertise<sensor_msgs::LaserScan>("/scan", 1);
+    laserCloud_pub = nh.advertise<sensor_msgs::PointCloud2> ("/PeopleCloud", 1);
     
     // Spin
     ros::spin ();

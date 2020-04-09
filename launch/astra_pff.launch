@@ -4,10 +4,10 @@
   <include file="$(find astra_launch)/launch/astrapro.launch" />
 
   <!-- start PointCloud Fast Filter -->
-    <node name="astra_pff" pkg="pff" type="astra_pff" output="screen">
+  <node name="astra_pff" pkg="pff" type="astra_pff" output="screen">
     <param name="robot_height" value="0.60"/> <!-- Default 0.5 (50cm) -->
-    <param name="sensor_height" value="0.52"/> <!-- Default 0.15 (15cm) -->
-    <param name="resolution" value="0.4"/> <!-- Default 0.4° -->
+    <param name="sensor_height" value="0.30"/> <!-- Default 0.15 (15cm) -->
+    <param name="resolution" value="0.2"/> <!-- Default 0.4° -->
   </node>
 
   <!-- start Turtlebot -->

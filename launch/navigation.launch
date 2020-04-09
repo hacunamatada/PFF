@@ -5,7 +5,7 @@
   <arg name="device_ip" default="" />
   <arg name="frame_id" default="velodyne" />
   <arg name="manager" default="$(arg frame_id)_nodelet_manager" />
-  <arg name="max_range" default="130.0" />
+  <arg name="max_range" default="15.0" />
   <arg name="min_range" default="0.4" />
   <arg name="pcap" default="" />
   <arg name="port" default="2368" />
@@ -49,8 +49,8 @@
 
   <!-- start PointCloud Fast Filter -->
   <node name="velodyne_pff" pkg="pff" type="velodyne_pff">
-    <param name="robot_height" value="0.90"/> <!-- Default 0.5 (50cm) -->
-    <param name="sensor_height" value="0.62"/> <!-- Default 0.15 (15cm) -->
+    <param name="robot_height" value="0.40"/> <!-- Default 0.5 (50cm) -->
+    <param name="sensor_height" value="0.32"/> <!-- Default 0.15 (15cm) -->
     <param name="horizontal_fov" value="360"/> <!-- Default 360° -->
     <param name="resolution" value="0.2"/> <!-- Default 0.4° -->
   </node>
@@ -62,11 +62,10 @@
   
 
   <!-- Map server -->
-  <arg name="map_file" default="$(env TURTLEBOT_MAP_FILE)"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(find pff_ped)/maps/mymap.yaml" />
 
   <!-- AMCL -->
-  <arg name="custom_amcl_launch_file" default="$(find turtlebot_navigation)/launch/includes/amcl/$(arg 3d_sensor)_amcl.launch.xml"/>
+  <arg name="custom_amcl_launch_file" default="$(find turtlebot_navigation)/launch/includes/amcl/amcl.launch.xml"/>
   <arg name="initial_pose_x" default="0.0"/> <!-- Use 17.0 for willow's map in simulation -->
   <arg name="initial_pose_y" default="0.0"/> <!-- Use 17.0 for willow's map in simulation -->
   <arg name="initial_pose_a" default="0.0"/>

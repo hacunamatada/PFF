@@ -1,3 +1,4 @@
+//#include <velodyne_pff.h>
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl_conversions/pcl_conversions.h>
@@ -6,10 +7,13 @@
 #include <sensor_msgs/LaserScan.h>
 #define PI 3.14159265
 
- 
 ros::Publisher scan_pub;
-float robotheight, sensorheight, resolution;
+
+float robotheight;
+float sensorheight;
+float resolution;
 int visionangle;
+std::string topic;
 
 /**
  * This function recieve the Velodyne PointCloud. 
@@ -114,7 +118,7 @@ cloud_cb2 (const sensor_msgs::PointCloud2ConstPtr& input)
     scan.angle_max = -PI/2;
     scan.angle_increment = -2*PI / num_readings;
     scan.time_increment = (1 / laser_frequency) / (num_readings);
-    scan.range_min = 0.2;
+    scan.range_min = 0.1;
     scan.range_max = 50.0;
     scan.ranges.resize(num_readings);
     scan.intensities.resize(num_readings);
@@ -138,10 +142,13 @@ main (int argc, char **argv)
 	ros::NodeHandle nh;
 
 	// Get launch parameters
-	if(!nh.getParam("/velodyne_pff/robot_height",robotheight)){robotheight = 0.80;}
-	if(!nh.getParam("/velodyne_pff/sensor_height",sensorheight)){sensorheight = 0.60;}
-	if(!nh.getParam("/velodyne_pff/horizontal_fov",visionangle)){visionangle = 360;}
-	if(!nh.getParam("/velodyne_pff/resolution",resolution)){resolution = 0.4;}
+	if(!nh.getParam("robot_height",robotheight)){robotheight = 3.0;}
+	if(!nh.getParam("sensor_height",sensorheight)){sensorheight = 0.35;}
+	if(!nh.getParam("horizontal_fov",visionangle)){visionangle = 180;}
+	if(!nh.getParam("resolution",resolution)){resolution = 0.2;}
+
+	if(!nh.getParam("topic", topic))
+      topic = "topic";
 
 	// Create a ROS subscriber for the input point cloud
 	ros::Subscriber sub = nh.subscribe ("/velodyne_points", 50, cloud_cb2);
