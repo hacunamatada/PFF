@@ -113,13 +113,6 @@ $ rosrun rviz rviz -d ~/catkin_ws/src/pff/rviz_cfg/pff.rviz
 
 ## Cite this work
 ```sh
-@inproceedings{medinasanchez2019,
-  title={Efficient Traversability Mapping for Service Robots Using a Point-cloud Fast Filter},
-  author={Medina S{\'a}nchez, Carlos and Zella, Matteo and Capitan, Jes{\'u}s and Marron, Pedro J},
-  booktitle={2019 19th International Conference on Advanced Robotics (ICAR)},
-  pages={590--595},
-  year={2019},
-  organization={IEEE}
-}
+@INPROCEEDINGS{8981625, author={C. M. {Sánchez} and M. {Zella} and J. {Capitan} and P. J. {Marron}}, booktitle={2019 19th International Conference on Advanced Robotics (ICAR)}, title={Efficient Traversability Mapping for Service Robots Using a Point-cloud Fast Filter}, year={2019}, volume={}, number={}, pages={584-589},}
 ```
 
