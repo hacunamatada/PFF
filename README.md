@@ -32,6 +32,7 @@ The algorithm "PointCloud Fast Filter" (PFF) extract the relevant information fr
 
 * [horizontal_fov] :  Desired horizontal field of view (from -theta/2 to theta/2), see the following image. in degrees.
 
+
 ![alt text](https://drive.google.com/uc?export=view&id=1489zOF8vgnzcyRe783N9ieJLoMB6DqZj)
 
 
