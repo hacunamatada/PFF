@@ -1,0 +1,83 @@
+<launch>   
+
+  <arg name="lvx_file_path" default="livox_test.lvx"/>
+	<arg name="bd_list" default="100000000000000"/>
+	<arg name="xfer_format" default="0"/>
+	<arg name="multi_topic" default="0"/>
+	<arg name="data_src" default="0"/>
+	<arg name="publish_freq" default="10.0"/>
+	<arg name="output_type" default="0"/>
+	<arg name="rviz_enable" default="true"/>
+	<arg name="rosbag_enable" default="false"/>
+	<arg name="cmdline_arg" default="$(arg bd_list)"/>
+	<arg name="msg_frame_id" default="livox_frame"/>
+	<arg name="lidar_bag" default="true"/>
+	<arg name="imu_bag" default="true"/>
+
+	<param name="xfer_format" value="$(arg xfer_format)"/>
+	<param name="multi_topic" value="$(arg multi_topic)"/>
+	<param name="data_src" value="$(arg data_src)"/>
+	<param name="publish_freq" type="double" value="$(arg publish_freq)"/>
+	<param name="output_data_type" value="$(arg output_type)"/>
+	<param name="cmdline_str" type="string" value="$(arg bd_list)"/>
+	<param name="cmdline_file_path" type="string" value="$(arg lvx_file_path)"/>
+	<param name="user_config_path" type="string" value="$(find livox_ros_driver)/config/livox_lidar_config.json"/>	
+	<param name="frame_id" type="string" value="$(arg msg_frame_id)"/>
+	<param name="enable_lidar_bag" type="bool" value="$(arg lidar_bag)"/>
+	<param name="enable_imu_bag" type="bool" value="$(arg imu_bag)"/>
+	
+	<node name="livox_lidar_publisher" pkg="livox_ros_driver"
+	      type="livox_ros_driver_node" required="true"
+	      output="screen" args="$(arg cmdline_arg)"/>
+
+  <!-- start PointCloud Fast Filter -->
+  <node name="velodyne" pkg="pff" type="velodyne">
+    <param name="robot_height" value="2.0"/> <!-- Default 1.0 (100cm) -->
+    <param name="sensor_height" value="0.61"/> <!-- Default 0.57 (57cm) -->
+    <param name="horizontal_fov" value="180"/> <!-- Default 360° -->
+    <param name="resolution" value="0.2"/> <!-- Default 0.2° -->
+    <param name="topic_pub" value="/scan"/> <!-- Default /scan -->
+    <param name="topic_sub" value="/livox/lidar"/> <!-- Default velodyne_points -->
+    <param name="frame_id" value="base_link"/> <!-- Default base_scan -->
+  </node> 
+
+  <!-- start Turtlebot -->
+  <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+
+  <!-- start gmapping -->
+   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
+    <remap from="scan" to="scan"/>
+    <param name="map_update_interval" value="5.0"/>      
+    <param name="linearUpdate" value="0.0"/>
+    <param name="angularUpdate" value="0.0"/>
+    <param name="maxUrange" value="50.0"/>
+    <param name="sigma" value="0.05"/>
+    <param name="kernelSize" value="1"/>
+    <param name="lstep" value="0.05"/>
+    <param name="astep" value="0.05"/>
+    <param name="iterations" value="5"/>
+    <param name="lsigma" value="0.075"/>
+    <param name="ogain" value="3.0"/>
+    <param name="lskip" value="0"/>
+    <param name="minimumScore" value="200"/>
+    <param name="srr" value="0.01"/>
+    <param name="srt" value="0.02"/>
+    <param name="str" value="0.01"/>
+    <param name="stt" value="0.02"/>
+    <param name="linearUpdate" value="0.0"/>
+    <param name="angularUpdate" value="0.0"/>
+    <param name="temporalUpdate" value="-1.0"/>
+    <param name="resampleThreshold" value="0.5"/>
+    <param name="particles" value="80"/>
+    <param name="delta" value="0.05"/>
+    <param name="llsamplerange" value="0.01"/>
+    <param name="llsamplestep" value="0.01"/>
+    <param name="lasamplerange" value="0.005"/>
+    <param name="lasamplestep" value="0.005"/>
+  </node>	
+
+
+  <!-- start rviz -->
+  <node type="rviz" name="rviz" pkg="rviz" args="-d $(find pff)/rviz_cfg/slam.rviz" />
+
+</launch>

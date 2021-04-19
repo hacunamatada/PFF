@@ -1,0 +1,72 @@
+<launch>   
+  
+  <arg name="lvx_file_path" default="livox_test.lvx"/>
+  <arg name="bd_list" default="100000000000000"/>
+  <arg name="xfer_format" default="0"/>
+  <arg name="multi_topic" default="0"/>
+  <arg name="data_src" default="0"/>
+  <arg name="publish_freq" default="10.0"/>
+  <arg name="output_type" default="0"/>
+  <arg name="rviz_enable" default="true"/>
+  <arg name="rosbag_enable" default="false"/>
+  <arg name="cmdline_arg" default="$(arg bd_list)"/>
+  <arg name="msg_frame_id" default="livox_frame"/>
+  <arg name="lidar_bag" default="true"/>
+  <arg name="imu_bag" default="true"/>
+
+  <param name="xfer_format" value="$(arg xfer_format)"/>
+  <param name="multi_topic" value="$(arg multi_topic)"/>
+  <param name="data_src" value="$(arg data_src)"/>
+  <param name="publish_freq" type="double" value="$(arg publish_freq)"/>
+  <param name="output_data_type" value="$(arg output_type)"/>
+  <param name="cmdline_str" type="string" value="$(arg bd_list)"/>
+  <param name="cmdline_file_path" type="string" value="$(arg lvx_file_path)"/>
+  <param name="user_config_path" type="string" value="$(find livox_ros_driver)/config/livox_lidar_config.json"/>	
+  <param name="frame_id" type="string" value="$(arg msg_frame_id)"/>
+  <param name="enable_lidar_bag" type="bool" value="$(arg lidar_bag)"/>
+  <param name="enable_imu_bag" type="bool" value="$(arg imu_bag)"/>
+
+  <node name="livox_lidar_publisher" pkg="livox_ros_driver"
+        type="livox_ros_driver_node" required="true"
+        output="screen" args="$(arg cmdline_arg)"/>
+
+  <!-- start PointCloud Fast Filter -->
+  <node name="velodyne" pkg="pff" type="velodyne">
+    <param name="robot_height" value="0.6"/> <!-- Default 1.0 (100cm) -->
+    <param name="sensor_height" value="0.57"/> <!-- Default 0.57 (57cm) -->
+    <param name="horizontal_fov" value="180"/> <!-- Default 360° -->
+    <param name="resolution" value="0.2"/> <!-- Default 0.2° -->
+    <param name="topic_pub" value="/scan"/> <!-- Default /scan -->
+    <param name="topic_sub" value="/livox/lidar"/> <!-- Default velodyne_points -->
+    <param name="frame_id" value="base_link"/> <!-- Default base_scan -->
+  </node> 
+
+  <!-- start Turtlebot -->
+  <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+
+  <arg name="3d_sensor" default="$(env TURTLEBOT_3D_SENSOR)"/>  <!-- r200, kinect, asus_xtion_pro -->
+  
+
+  <!-- Map server -->
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find pff)/maps/office.yaml" />
+
+  <!-- AMCL -->
+  <arg name="custom_amcl_launch_file" default="$(find turtlebot_navigation)/launch/includes/amcl/amcl.launch.xml"/>
+  <arg name="initial_pose_x" default="9.886837005615234"/> <!-- Use 17.0 for willow's map in simulation -->
+  <arg name="initial_pose_y" default="24.690201568603516"/> <!-- Use 17.0 for willow's map in simulation -->
+  <arg name="initial_pose_a" default="0.2250533"/>
+  <include file="$(arg custom_amcl_launch_file)">
+    <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
+    <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
+    <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
+  </include>
+
+  <!-- Move base -->
+  <arg name="custom_param_file" default="$(find turtlebot_navigation)/param/$(arg 3d_sensor)_costmap_params.yaml"/>
+  <include file="$(find turtlebot_navigation)/launch/includes/move_base.launch.xml">
+    <arg name="custom_param_file" value="$(arg custom_param_file)"/>
+  </include>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find pff)/rviz_cfg/navigation.rviz"/>
+
+</launch>

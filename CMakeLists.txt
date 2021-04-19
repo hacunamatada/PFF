@@ -19,11 +19,11 @@ include_directories(
 )
 include_directories(src)
 
-add_executable(velodyne_pff src/velodyne_pff.cpp)
+add_executable(velodyne src/velodyne.cpp)
 add_executable(astra_pff src/astra_pff.cpp)
 add_executable(kinect_pff src/kinect_pff.cpp)
 
-target_link_libraries(velodyne_pff ${catkin_LIBRARIES})
+target_link_libraries(velodyne ${catkin_LIBRARIES})
 target_link_libraries(astra_pff ${catkin_LIBRARIES})
 target_link_libraries(kinect_pff ${catkin_LIBRARIES})
 

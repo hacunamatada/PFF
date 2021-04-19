@@ -1,33 +1,38 @@
 <launch>   
 
-  <!-- start astra camera driver -->
-  <include file="$(find astra_launch)/launch/astrapro.launch" />
+   <!-- start astra camera driver -->
+  <include file="$(find astra_camera)/launch/astra.launch" />
 
-  <!-- start PointCloud Fast Filter to convert to laserscan-->
-  <node name="astra_pff" pkg="pff" type="astra_pff" output="screen">
-    <param name="robot_height" value="0.60"/> <!-- Default 0.5 (50cm) -->
-    <param name="sensor_height" value="0.30"/> <!-- Default 0.15 (15cm) -->
-    <param name="resolution" value="0.2"/> <!-- Default 0.4° -->
-  </node>
+  
+    <!-- start PointCloud Fast Filter -->
+  <node name="astra_pff" pkg="pff" type="astra_pff">
+    <param name="robot_height" value="0.6"/> <!-- Default 1.0 (100cm) -->
+    <param name="sensor_height" value="0.50"/> <!-- Default 0.57 (57cm) -->
+    <param name="horizontal_fov" value="360"/> <!-- Default 360° -->
+    <param name="resolution" value="0.2"/> <!-- Default 0.2° -->
+    <param name="topic_pub" value="/scan"/> <!-- Default /scan -->
+    <param name="topic_sub" value="/camera/depth/points"/> <!-- Default velodyne_points -->
+    <param name="frame_id" value="base_link"/> <!-- Default base_scan -->
+  </node> 
 
   <!-- start Turtlebot -->
   <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>  
   
 
   <!-- Map server -->
-  <node name="map_server" pkg="map_server" type="map_server" args="$(find pff_ped)/maps/mymap3.yaml" />
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find pff)/maps/office.yaml" />
 
   <!-- AMCL -->
   <arg name="custom_amcl_launch_file" default="$(find turtlebot_navigation)/launch/includes/amcl/amcl.launch.xml"/>
-  <arg name="initial_pose_x" default="0.0"/> <!-- Use 17.0 for willow's map in simulation -->
-  <arg name="initial_pose_y" default="0.0"/> <!-- Use 17.0 for willow's map in simulation -->
-  <arg name="initial_pose_a" default="1.57"/>
+  <arg name="initial_pose_x" default="13.7"/> <!-- Use 17.0 for willow's map in simulation -->
+  <arg name="initial_pose_y" default="33.26"/> <!-- Use 17.0 for willow's map in simulation -->
+  <arg name="initial_pose_a" default="-1.6"/>
   <include file="$(arg custom_amcl_launch_file)">
     <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
     <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
     <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
   </include>
-
+  
   <!-- Move base -->
   <arg name="3d_sensor" default="$(env TURTLEBOT_3D_SENSOR)"/>  <!-- r200, kinect, asus_xtion_pro -->
   <arg name="custom_param_file" default="$(find turtlebot_navigation)/param/$(arg 3d_sensor)_costmap_params.yaml"/>
